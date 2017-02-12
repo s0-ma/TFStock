@@ -73,7 +73,7 @@ if __name__ == "__main__":
     for company in nikkei_255:
         data = scraping_yahoo(company, StartDate, EndDate, "d")
         try:
-            data.to_csv(str(company)+".txt")
+            data.to_csv("../data/rawdata/"+str(company)+".txt")
         except:
             print "err:" + str(company)
 

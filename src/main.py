@@ -10,7 +10,6 @@ from __future__ import print_function
 
 import tensorflow as tf
 from tensorflow.python.ops import rnn, rnn_cell
-import matplotlib.pyplot.hist
 
 # Import MNIST data
 #from tensorflow.examples.tutorials.mnist import input_data
@@ -119,10 +118,6 @@ with tf.Session() as sess:
     #test_data = mnist.test.images[:test_len].reshape((-1, n_steps, n_input))
     #test_label = mnist.test.labels[:test_len]
     softmax_output = sess.run(softmax, feed_dict={x: test_data, y: test_label})
-    for arr in softmax_output:
-        plt.hist(arr, subplots=True)
-    print(softmax_output)
-    plt.show()
 
     print("Testing Accuracy:", \
         sess.run(accuracy, feed_dict={x: test_data, y: test_label}),

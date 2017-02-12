@@ -4,7 +4,7 @@
 import pandas as pd
 
 #"all.txt"を 0列目をindexとして, 0,1行目をheaderとして 読み込む。0番目(Date)はdatetimeでパース。
-df = pd.read_csv("all.txt", index_col=0, header=[0,1], parse_dates=[0])
+df = pd.read_csv("../data/rawdata/all.txt", index_col=0, header=[0,1], parse_dates=[0])
 print type(df.index[0])
 
 #列ラベル1が"1332" かつ 列ラベル2が"Adj Close"のものをprint

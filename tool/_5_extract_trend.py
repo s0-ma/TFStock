@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # 設定
-file_name = "./yahoo_data_lib/all.txt" # 入力ファイルパス
-output_path = "./yahoo_data_trends/" # 出力フォルダパス
+file_name = "../data/rawdata/all.txt" # 入力ファイルパス
+output_path = "../data/trenddata/" # 出力フォルダパス
 
 # パラメタ
 rolling_mean_window = 50 # 移動平均を取る日数

@@ -5,7 +5,7 @@ import pandas as pd
 
 if __name__ == "__main__":
 
-    file_list = glob.glob("*.txt")
+    file_list = glob.glob("../data/rawdata/*.txt")
     file_list.sort()
 
     f = file_list[0]
@@ -18,5 +18,5 @@ if __name__ == "__main__":
         ret = ret.join(df)
     print ret
 
-    ret.to_csv("all.txt")
+    ret.to_csv("../data/rawdata/all.txt")
 

@@ -44,7 +44,7 @@ if __name__ == "__main__":
     id1 = "8316"
     id2 = "8411"
 
-    df = pd.read_csv("all.txt", index_col=0, header=[0,1], parse_dates=[0])
+    df = pd.read_csv("../data/rawdata/all.txt", index_col=0, header=[0,1], parse_dates=[0])
 
     df1 = df[id1][["Adj Close",]]
     df2 = df[id2][["Adj Close",]]
