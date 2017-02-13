@@ -9,7 +9,7 @@ import numpy as np
 class TFSummary:
 
     SUMMARY_FILE_PATH = '../data/other/trend_summary.csv'
-    TREND_FILE_DIR = '../data/trenddata'
+    TREND_FILE_DIR = '../data/quadratic_0.5'
 
     # 機械学習で当てに行く値の返却
     @classmethod

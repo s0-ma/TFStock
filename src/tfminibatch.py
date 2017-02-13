@@ -72,8 +72,8 @@ class TFMinibatch:
         self.num_of_class = num_of_class #クラス数
 
         # サマリデータとクラス数から、ラベルのしきい値を作成
-        self.list_class_limit = TFMinibatchHelper.calculateClassLimits(self.num_of_class)
-        #self.list_class_limit = TFMinibatchHelper.calculateClassLimitsFixed(self.num_of_class)
+        #self.list_class_limit = TFMinibatchHelper.calculateClassLimits(self.num_of_class)
+        self.list_class_limit = TFMinibatchHelper.calculateClassLimitsFixed(self.num_of_class)
         print "list_class_limit"
         print self.list_class_limit
 
@@ -89,8 +89,8 @@ class TFMinibatch:
             df = pd.read_csv(filename, index_col="Date")
 
             # 正規化する
-            df = self.normalize(df)
-            #df = self.normalize_fixed(df)
+            #df = self.normalize(df)
+            df = self.normalize_fixed(df)
 
             # ランダムに訓練とテストに分けてセットに格納
             self.append_to_target_class(df)
@@ -119,9 +119,9 @@ class TFMinibatch:
         # 追加するリストの該当するクラスの配列へ追加
 
         #本番用
-        target_class = self.calculate_target_class(target)
+        #target_class = self.calculate_target_class(target)
         #テスト用
-        #target_class = self.calculate_target_class_fixed(df_close)
+        target_class = self.calculate_target_class_fixed(df_close)
 
         list_to_append[target_class].append(df)
 
@@ -187,8 +187,8 @@ class TFMinibatch:
                 batch_x.append(list_input_reshaped)
 
                 # label
-                list_label = self.create_label(i)
-                #list_label = self.create_label_fixed(i)
+                #list_label = self.create_label(i)
+                list_label = self.create_label_fixed(i)
                 batch_y.append(list_label)
 
                 #print len(df.index)

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
 A Recurrent Neural Network (LSTM) implementation example using TensorFlow library.
 This example is using the MNIST database of handwritten digits (http://yann.lecun.com/exdb/mnist/)
@@ -10,6 +11,8 @@ from __future__ import print_function
 
 import tensorflow as tf
 from tensorflow.python.ops import rnn, rnn_cell
+import pandas as pd
+import matplotlib.pyplot as plt
 
 # Import MNIST data
 #from tensorflow.examples.tutorials.mnist import input_data
@@ -108,14 +111,16 @@ class TFNeuralNet:
         correct_pred_inner_product = tf.div(inner_product, abs)
         accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
         accuracy_inner_product = tf.reduce_mean(tf.cast(correct_pred_inner_product, tf.float32))
-        print(abs)
-        print(softmax)
-        print(y)
-        print(accuracy)
-        print(accuracy_inner_product)
+        #print(abs)
+        #print(softmax)
+        #print(y)
+        #print(accuracy)
+        #print(accuracy_inner_product)
 
         # Initializing the variables
         init = tf.initialize_all_variables()
+
+        result_df = pd.DataFrame(columns=('acc', 'loss'))
 
         # Launch the graph
         with tf.Session() as sess:
@@ -133,26 +138,33 @@ class TFNeuralNet:
                     acc = sess.run(accuracy, feed_dict={x: batch_x, y: batch_y})
                     # Calculate batch loss
                     loss = sess.run(cost, feed_dict={x: batch_x, y: batch_y})
-                    print("Iter " + str(step*batch_size) + ", Minibatch Loss= " + \
-                          "{:.6f}".format(loss) + ", Training Accuracy= " + \
-                          "{:.5f}".format(acc))
+                    result_df.loc[step] = [acc, loss]
+                    #print("Iter " + str(step*batch_size) + ", Minibatch Loss= " + \
+                    #      "{:.6f}".format(loss) + ", Training Accuracy= " + \
+                    #      "{:.5f}".format(acc))
                 step += 1
             print("Optimization Finished!")
+
+            #fig, (axL, axR) = plt.subplots(ncols=2, sharex=True)
+            #result_df['acc'].plot(ax=axL)
+            #result_df['loss'].plot(ax=axR)
+            result_df['loss'].plot()
+            plt.show()
 
             # Calculate accuracy for 128 mnist test images
             #test_len = 10
             test_data, test_label = self.tfminibatch.get_next_batch_test(100)
             #test_data = mnist.test.images[:test_len].reshape((-1, n_steps, n_input))
             #test_label = mnist.test.labels[:test_len]
-            softmax_output = sess.run(softmax, feed_dict={x: test_data, y: test_label})
+            #softmax_output = sess.run(softmax, feed_dict={x: test_data, y: test_label})
 
             print("Testing Accuracy:", \
-                sess.run(accuracy, feed_dict={x: test_data, y: test_label}),
+                sess.run(accuracy, feed_dict={x: test_data, y: test_label}))
                   #sess.run(inner_product, feed_dict={x: test_data, y: test_label}),
                   #sess.run(accuracy, feed_dict={x: test_data, y: test_label}),
-                  sess.run(accuracy_inner_product, feed_dict={x: test_data, y: test_label}),
-                sess.run(softmax, feed_dict={x: test_data, y: test_label}),
-                  sess.run(y, feed_dict={x: test_data, y: test_label}))
+                  #sess.run(accuracy_inner_product, feed_dict={x: test_data, y: test_label}),
+                  #sess.run(softmax, feed_dict={x: test_data, y: test_label}),
+                  #sess.run(y, feed_dict={x: test_data, y: test_label}))
                 #sess.run(tf.argmax(softmax, 1), feed_dict={x: test_data, y: test_label}))
 
             summary_writer = tf.train.SummaryWriter('log', graph=sess.graph)

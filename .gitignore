@@ -8,3 +8,5 @@ src/log/
 *.swp
 
 notebook/\.ipynb_checkpoints/
+
+notebook/log/
