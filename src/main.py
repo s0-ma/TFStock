@@ -26,16 +26,16 @@ handle 28 sequences of 28 steps for every sample.
 '''
 
 # Parameters
-learning_rate = 0.001
-training_iters = 1000
+learning_rate = 0.01
+training_iters = 10000
 batch_size = 10
 display_step = 10
 
 # Network Parameters
 n_input = 1 # MNIST data input (img shape: 28*28)
 n_steps = 30 # timesteps
-n_hidden = 100 # hidden layer num of features
-n_classes = 10 # MNIST total classes (0-9 digits)
+n_hidden = 2 # hidden layer num of features
+n_classes = 5 # MNIST total classes (0-9 digits)
 
 # tfstock data initialize
 tfminibatch = tfmb.TFMinibatch(n_classes)
@@ -85,7 +85,18 @@ optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
 
 # Evaluate model
 correct_pred = tf.equal(tf.argmax(pred,1), tf.argmax(y,1))
+inner_product = tf.reduce_sum(tf.mul(softmax, y), 1)
+abs_softmax = tf.sqrt(tf.reduce_sum(tf.mul(softmax, softmax), 1))
+abs_y = tf.sqrt(tf.reduce_sum(tf.mul(y, y), 1))
+abs = tf.mul(abs_softmax, abs_y)
+correct_pred_inner_product = tf.div(inner_product, abs)
 accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
+accuracy_inner_product = tf.reduce_mean(tf.cast(correct_pred_inner_product, tf.float32))
+print(abs)
+print(softmax)
+print(y)
+print(accuracy)
+print(accuracy_inner_product)
 
 # Initializing the variables
 init = tf.initialize_all_variables()
@@ -114,14 +125,18 @@ with tf.Session() as sess:
 
     # Calculate accuracy for 128 mnist test images
     #test_len = 10 
-    test_data, test_label = tfminibatch.get_next_batch_test(10)
+    test_data, test_label = tfminibatch.get_next_batch_test(100)
     #test_data = mnist.test.images[:test_len].reshape((-1, n_steps, n_input))
     #test_label = mnist.test.labels[:test_len]
     softmax_output = sess.run(softmax, feed_dict={x: test_data, y: test_label})
 
     print("Testing Accuracy:", \
         sess.run(accuracy, feed_dict={x: test_data, y: test_label}),
+          #sess.run(inner_product, feed_dict={x: test_data, y: test_label}),
+          #sess.run(accuracy, feed_dict={x: test_data, y: test_label}),
+          sess.run(accuracy_inner_product, feed_dict={x: test_data, y: test_label}),
         sess.run(softmax, feed_dict={x: test_data, y: test_label}),
-        sess.run(tf.argmax(softmax, 1), feed_dict={x: test_data, y: test_label}))
+          sess.run(y, feed_dict={x: test_data, y: test_label}))
+        #sess.run(tf.argmax(softmax, 1), feed_dict={x: test_data, y: test_label}))
 
     summary_writer = tf.train.SummaryWriter('log', graph=sess.graph)

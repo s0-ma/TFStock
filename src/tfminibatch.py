@@ -12,6 +12,16 @@ class TFMinibatchHelper:
     
     SUMMARY_FILE_PATH = tfs.TFSummary.SUMMARY_FILE_PATH
 
+    # 
+    @classmethod
+    def calculateClassLimitsFixed(cls, num_of_class):
+        list_class_limit = []
+        if num_of_class != 5:
+            raise 'FixedのClassLimitsを使う場合、num_of_classは5である必要があります。'
+        else:
+            list_class_limit = [-2.5, -1.5, 0.5, 1.5, 2.5]
+        return list_class_limit
+
     # サマリデータとクラス数から、全データについてラベルが均等に分布するような
     # クラス分割のしきい値を決定する
     @classmethod
@@ -39,7 +49,7 @@ class TFMinibatchHelper:
         list_class_limit = []
         for i in range(num_of_class):
             # target_min から target_max までのデータ数をNで割ったi番目の累積データ数
-            limit_idx = n_min_value + (n_all - n_min_value) * (float(i - 1)/num_of_class)
+            limit_idx = n_min_value + (n_all - n_min_value) * (float(i)/num_of_class)
             # 該当の累積データ数点での target の値を
             list_class_limit.append(df_summary['target'].iloc[int(limit_idx)])
 
@@ -63,6 +73,7 @@ class TFMinibatch:
 
         # サマリデータとクラス数から、ラベルのしきい値を作成
         self.list_class_limit = TFMinibatchHelper.calculateClassLimits(self.num_of_class)
+        #self.list_class_limit = TFMinibatchHelper.calculateClassLimitsFixed(self.num_of_class)
         print "list_class_limit"
         print self.list_class_limit
 
@@ -79,6 +90,7 @@ class TFMinibatch:
 
             # 正規化する
             df = self.normalize(df)
+            #df = self.normalize_fixed(df)
 
             # ランダムに訓練とテストに分けてセットに格納
             self.append_to_target_class(df)
@@ -105,10 +117,34 @@ class TFMinibatch:
         target = tfs.TFSummary.get_target(df_close)
 
         # 追加するリストの該当するクラスの配列へ追加
+
+        #本番用
+        target_class = self.calculate_target_class(target)
+        #テスト用
+        #target_class = self.calculate_target_class_fixed(df_close)
+
+        list_to_append[target_class].append(df)
+
+    def calculate_target_class(self, target):
         for i, val in enumerate(reversed(self.list_class_limit)):
             if target >= val:
-                list_to_append[i].append(df)
-                break
+                return i
+        return 0
+
+    # テスト用
+    def calculate_target_class_fixed(self, df):
+        hoge = df[60]
+        if hoge > 1.5:
+            return 4
+        elif hoge > 0.5:
+            return 3
+        elif hoge > -0.5:
+            return 2
+        elif hoge > -1.5:
+            return 1
+        else:
+            return 0
+
 
     #
     def get_next_batch_train(self, batch_size):
@@ -151,8 +187,8 @@ class TFMinibatch:
                 batch_x.append(list_input_reshaped)
 
                 # label
-                list_label = [0]*self.num_of_class
-                list_label[i] = 1
+                list_label = self.create_label(i)
+                #list_label = self.create_label_fixed(i)
                 batch_y.append(list_label)
 
                 #print len(df.index)
@@ -163,6 +199,27 @@ class TFMinibatch:
                 #print list_input_reshaped
 
         return batch_x, batch_y
+
+    # 本番用
+    def create_label(self, index):
+        list_label = [0] * self.num_of_class
+        list_label[index] = 1
+        return list_label
+
+    # テスト用
+    def create_label_fixed(self, index):
+        list_label = [0] * self.num_of_class
+        if index == 0:
+            list_label = [0.6,0.4,0,0,0]
+        elif index == 1:
+            list_label = [0.2,0.6,0.2,0,0]
+        elif index == 2:
+            list_label = [0,0.2,0.6,0.2,0]
+        elif index == 3:
+            list_label = [0,0,0.2,0.6,0.2]
+        elif index == 4:
+            list_label = [0,0,0,0.4,0.6]
+        return list_label
 
     # データを正規化する
     # 開始から30日内での平均値で割って1を引いた列を追加する
@@ -177,6 +234,11 @@ class TFMinibatch:
         # "normalized"列を追加
         df = df.assign(normalized=df_adj_close_normalized)
 
+        return df
+
+    def normalize_fixed(self, df):
+        # "normalized"列を追加
+        df = df.assign(normalized=df['Adj Close'])
         return df
 
     # テストプロット
