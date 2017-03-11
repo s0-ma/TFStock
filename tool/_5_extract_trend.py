@@ -87,7 +87,7 @@ def extract_trend_for_brand(brand_id):
                 # print df_brand_trend
 
                 # 個別のcsvを出力
-                csv_file_id = brand_id + "_" + str(trend_start)
+                csv_file_id = brand_id + "_" + str(trend_start)[0:10]
                 df_brand_trend.to_csv(output_path + csv_file_id + ".csv")
 
 
