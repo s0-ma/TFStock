@@ -16,7 +16,8 @@ if __name__ == "__main__":
         df = pd.read_csv(f, index_col="Date")
         df.columns = [[f.split(".")[0]] * len(df.columns), df.columns]
         ret = ret.join(df)
-    print ret
 
-    ret.to_csv("../data/rawdata/all.txt")
+    print(ret)
+
+    ret.to_csv("../data/rawdata/merged/all.txt")
 
