@@ -15,12 +15,12 @@ class FixedTermCSVProcessor(BaseRawDataProcessor):
         srcで渡されたパスのCSVファイルをよみこみ、dfとして返却する
         パス直下のCSVデータの列数、行数はすべて等しい前提
         Args:
-            src: CSVファイルのあるディレクトリパス
+            src: CSVファイルパス
         """
 
         # csvをロードし、dfに入れる
         csv_file_path = src
-        df = pd.read_csv(csv_file_path)
+        df = pd.read_csv(csv_file_path, index_col=["TermID", "Date"])
 
         return df
 

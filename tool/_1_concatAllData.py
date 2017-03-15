@@ -10,7 +10,7 @@ if __name__ == "__main__":
     args = sys.argv
     print(args)
     if len(args) < 3:
-        raise ValueError("usage: python _1_concatAllData.py ../data/rawdata/  *.txt  index_col_name")
+        raise ValueError("usage: python _1_concatAllData.py ../data/rawdata/  *.txt")
 
     print(args[1]+args[2])
     file_list = glob.glob(args[1]+ args[2])
@@ -29,7 +29,7 @@ if __name__ == "__main__":
     print(list_key)
 
     ret = pd.concat(list_df, keys=list_key)
-    ret.index.names = [args[3], 'Date']
+    ret.index.names = ['TermID', 'Date']
 
     ret.to_csv(args[1] + "merged/concat.txt")
 
