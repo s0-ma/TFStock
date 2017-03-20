@@ -9,14 +9,14 @@ class BasePreprocessor(metaclass=ABCMeta):
 
     def __init__(self, df, parameter):
         self.df = df
-        self.labeled_df = None
+        self.processed_df = None
         self.parameter = parameter
 
     def process(self):
-        df = self.df
-        parameter = self.parameter
-        normalized_df = self.normalize(df, parameter)
-        labeled_df = self.attachLabel(normalized_df, parameter)
+        u"""正規化後、ラベル付けを実行します"""
+        normalized_df = self.normalize(self.df, self.parameter)
+        labeled_df = self.attachLabel(normalized_df, self.parameter)
+
         self.processed_df = labeled_df
         return labeled_df;
 
@@ -30,4 +30,4 @@ class BasePreprocessor(metaclass=ABCMeta):
 
     def save_csv(self, path):
         u"""正規化し、ラベル付けしたdfをcsvに保存する"""
-        self.labeled_df.to_csv(path)
+        self.processed_df.to_csv(path)

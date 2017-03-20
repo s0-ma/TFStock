@@ -13,19 +13,31 @@ class RatioPreprocessor(BasePreprocessor):
     def normalize(self):
         u"""
         各列のデータを前日比で置き換える
-        一番目のデータは1とする
-        parameterは使用しない。
+            一番目のデータは1とする
+            parameterは使用しない。
         """
-        #for index, row in df.iterrows():
-        df = self.df
 
-        print(df)
+        # 返却値を生成
+        df = self.df
+        normalized_df = pd.DataFrame(index=df.index, columns=df.columns)
+
         for termid, subdf in df.groupby(level=0):
-            for date, row in subdf.iterrows():
+            firstrow = True
+            for i in range(1, subdf.shape[0]):
+                print(df.irow(i))
+
                 # 一番目の場合、1を入れる
+                #if firstrow:
+                    #
+
                 # 二番目以降の場合、直前のデータで割った値を入れる
-                print(row)
+                #else:
+
+                firstrow = False
+
             break
+
+        return normalized_df
 
     def attach_label(self):
         u"""
@@ -51,6 +63,7 @@ class RatioPreprocessor(BasePreprocessor):
         if self.list_threshold:
             return self.list_threshold
         else:
+            #TODO
             raise NotImplementedError
             return ""
 
@@ -63,6 +76,6 @@ class RatioPreprocessorParameter:
         self.enddate_index = enddate_index
 
     def __init__(self, parameter):
-        self.startdate_index = parameter.startdate_index
-        self.enddate_index = parameter.enddate_index
+        self.__init__(parameter.startdate_index,
+                      parameter.enddate_index)
 

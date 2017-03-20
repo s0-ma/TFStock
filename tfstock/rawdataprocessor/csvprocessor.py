@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import pandas as pd
 from .baserawdataprocessor import *
+from ..common.constant import *
 
 u"""CSVデータを処理し、pandasのdataframeを返却するモジュール"""
 
@@ -11,16 +12,10 @@ class FixedTermCSVProcessor(BaseRawDataProcessor):
         raise NotImplementedError
 
     def create_df(self, src):
-        u"""
-        srcで渡されたパスのCSVファイルをよみこみ、dfとして返却する
-        パス直下のCSVデータの列数、行数はすべて等しい前提
-        Args:
-            src: CSVファイルパス
-        """
+        u"""srcで渡されたパスのCSVファイルをよみこみ、dfとして返却する"""
 
-        # csvをロードし、dfに入れる
         csv_file_path = src
-        df = pd.read_csv(csv_file_path, index_col=["TermID", "Date"])
+        df = pd.read_csv(csv_file_path, index_col=[Const.FIRST_INDEX, Const.SECOND_INDEX])
 
         return df
 
@@ -35,6 +30,7 @@ class EarningCSVProcessor(BaseRawDataProcessor):
             src: CSVファイルのあるディレクトリパス
             df: 処理データを追加する対象のdf
         """
+        #TODO
         return df
 
     def create_df(self, src):
