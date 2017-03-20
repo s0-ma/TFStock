@@ -6,7 +6,7 @@ import pandas
 import datetime
 
 def scraping_yahoo(code, start, end, term):
-    print code
+    print(code)
     base = "http://info.finance.yahoo.co.jp/history/?code={0}.T&{1}&{2}&tm={3}&p={4}"
 
     start = str(start)
@@ -75,5 +75,5 @@ if __name__ == "__main__":
         try:
             data.to_csv("../data/rawdata/"+str(company)+".txt")
         except:
-            print "err:" + str(company)
+            print("err:" + str(company))
 
